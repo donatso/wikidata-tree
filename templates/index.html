@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load staticfiles %}
+</head>
+<body>
+<style>
+
+
+
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 3px;
+    }
+
+    .tree_node text {
+      font: 12px sans-serif;
+    }
+
+    .tree_link {
+      fill: none;
+      stroke: grey;
+      stroke-width: 0.1em;
+    }
+
+    .tree_card{
+      fill: grey;
+      cursor: pointer;
+    }
+
+    .tree_text{
+      fill: white;
+      pointer-events: none;
+    }
+
+    .kartica_button{
+      fill: black;
+    }
+
+    svg{
+        background-color: darkslategrey;
+        {#padding: 0;#}
+        {#margin: 0;#}
+        {#width: 100%;#}
+        {#height: 100%;#}
+    }
+
+
+    body{
+        margin: 0;
+    }
+
+    .navbar{
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 3;
+        height: 3em;
+        background-color: black;
+        text-align: center;
+    }
+
+    #search{
+        font-size: 1.5em;
+        margin-top: 0.2em;
+    }
+
+    #results{
+        position: absolute;
+        left: 0;
+        margin-top: 3em;
+        z-index: 5;
+        margin-left: 1em;
+        background-color: chocolate;
+        font-size: 2em;
+    }
+    #results>div{
+        cursor: pointer;
+        background-color: white;
+        margin-top: 0.1em;
+    }
+
+    .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+    .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+    .autocomplete-selected { background: #F0F0F0; }
+    .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+    .autocomplete-group { padding: 2px 5px; }
+    .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+
+
+
+    div.overlay {
+        display:        table;
+        position:        fixed;
+        top:            0;
+        left:            0;
+        width:            100%;
+        height:            100%;
+    }
+    div.overlay > div {
+        display:        table-cell;
+        width:            100%;
+        height:            100%;
+        background:        #ccc;
+        opacity:        1.5;
+        text-align:        center;
+        vertical-align:    middle;
+    }
+
+
+
+</style>
+
+
+<div class="navbar"><input type="text" placeholder="search" id="search"></div>
+<div id="results"></div>
+<div class="overlay"><div>LOADING DATA...</div></div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/static/plugins/jQuery-Autocomplete-master/src/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="/static/js/d3.js"></script>
+<script type="text/javascript" src="/static/js/tree_wikidata.js"></script>
+
+
+
+
+
+</body>
+</html>
