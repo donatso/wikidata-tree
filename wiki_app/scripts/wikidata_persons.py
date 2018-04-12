@@ -13,6 +13,9 @@ class wikidataVariables():
     mother_P = "P25"
     sibling_P = "P3373"
     img_P = "P18"
+    gender_P = "P21"
+    male_Q = "Q6581097"
+    female_Q = "Q6581072"
     persons = {}
     lookup = {}
 
@@ -99,7 +102,15 @@ def wikidata_tree(persona_id):
             p.get()
             wiki_vars.persons[p._content["id"]] = p._content
 
-        return {"wiki_id": p_id, "label": lbl_wikidata(p_id), "citation": ""}
+        def get_gender():
+            if wiki_vars.gender_P in wiki_vars.persons[p_id]["claims"]:
+                gender = wiki_vars.persons[p_id]["claims"][wiki_vars.gender_P][0]["mainsnak"]["datavalue"]["value"]["id"]
+                gender = "f" if gender == wiki_vars.female_Q else "m"
+            else:
+                gender = "u"
+            return gender
+
+        return {"wiki_id": p_id, "label": lbl_wikidata(p_id), "citation": "", "gender": get_gender()}
 
     tree = get_info(persona_id)
     tree["ancestry"] = get_rels(persona_id, "ancestry", depth=0)

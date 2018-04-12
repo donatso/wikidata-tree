@@ -267,25 +267,25 @@ class Dtree {
                 })
              .classed("tree_text", true);
 
-        // nodeEnter.append('image')
-        //     .attr("xlink:href", function(d) {
-        //         if (d.data.citation && d.data.citation.length > 0) {
-        //             return d.data.citation.slice(-1)[0];
-        //         }
-        //         // else if (d.gender = "f") {
-        //         //     return "../static/dTree/images/placeholder-female.png";
-        //         // }
-        //         else {
-        //             return "../static/opentree_static/dTree/images/placeholder.png";
-        //         }
-        //     })
-        //     .attr("x", 39.5)
-        //     .attr("y", -16.2)
-        //     .attr("width", 30)
-        //     .attr("height", 30)
-        //     .attr("preserveAspectRatio", "xMidYMid slice")
-        //     .attr("class", "rukavica")
-        //     .style("border-radius", "5em");
+        nodeEnter.append('image')
+            .attr("xlink:href", function(d) {
+                if (d.data.citation && d.data.citation.length > 0) {
+                    return d.data.citation.slice(-1)[0];
+                }
+                else if (d.data.gender === "f") {
+                    return "/static/files/imgs/placeholder-female.png";
+                }
+                else {
+                    return "/static/files/imgs/placeholder.png";
+                }
+            })
+            .attr("x", 39.5)
+            .attr("y", -16.2)
+            .attr("width", 30)
+            .attr("height", 30)
+            .attr("preserveAspectRatio", "xMidYMid slice")
+            .attr("class", "rukavica")
+            .style("border-radius", "5em");
 
 
     // var move_x_to = -rectW/2 +22;
