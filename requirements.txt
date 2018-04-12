@@ -1,8 +1,10 @@
 certifi==2018.1.18
 chardet==3.0.4
 Django==2.0.4
+gunicorn==19.7.1
 idna==2.6
 pytz==2018.4
-pywikibot
+pywikibot==3.0.dev0
 requests==2.18.4
 urllib3==1.22
+whitenoise==3.3.1
