@@ -101,16 +101,23 @@ def wikidata_tree(persona_id):
             p = pywikibot.ItemPage(repo_wikidata, p_id)
             p.get()
             wiki_vars.persons[p._content["id"]] = p._content
-
+        c = wiki_vars.persons[p_id]["claims"]
         def get_gender():
-            if wiki_vars.gender_P in wiki_vars.persons[p_id]["claims"]:
-                gender = wiki_vars.persons[p_id]["claims"][wiki_vars.gender_P][0]["mainsnak"]["datavalue"]["value"]["id"]
+            if wiki_vars.gender_P in c:
+                gender = c[wiki_vars.gender_P][0]["mainsnak"]["datavalue"]["value"]["id"]
                 gender = "f" if gender == wiki_vars.female_Q else "m"
             else:
                 gender = "u"
             return gender
 
-        return {"wiki_id": p_id, "label": lbl_wikidata(p_id), "citation": "", "gender": get_gender()}
+        def get_img():
+            if wiki_vars.img_P in c:
+                rl = c[wiki_vars.img_P][0]["mainsnak"]["datavalue"]["value"]
+                img_url = get_img_url(rl)
+                return img_url
+            return ""
+
+        return {"wiki_id": p_id, "label": lbl_wikidata(p_id), "gender": get_gender(), "citation": get_img()}
 
     tree = get_info(persona_id)
     tree["ancestry"] = get_rels(persona_id, "ancestry", depth=0)
@@ -129,3 +136,17 @@ def lookup(search):
             if len(suggs) == 7:
                 break
     return suggs
+
+
+from bs4 import BeautifulSoup
+import requests
+def get_img_url(rl):
+    url = "https://commons.wikimedia.org/wiki/File:" + rl
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    try:
+        img_url = soup.find("img", attrs={"alt": "File:{}".format(rl)}).attrs["src"]
+        print(img_url)
+    except:
+        img_url = ""
+    return img_url

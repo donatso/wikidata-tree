@@ -270,7 +270,7 @@ class Dtree {
         nodeEnter.append('image')
             .attr("xlink:href", function(d) {
                 if (d.data.citation && d.data.citation.length > 0) {
-                    return d.data.citation.slice(-1)[0];
+                    return d.data.citation;
                 }
                 else if (d.data.gender === "f") {
                     return "/static/files/imgs/placeholder-female.png";
