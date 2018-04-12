@@ -88,7 +88,10 @@ def wikidata_tree(persona_id):
         for rel_type in rel_types:
             if rel_type in c.keys():
                 for rel_val in c[rel_type]:
-                    rel_id = rel_val["mainsnak"]["datavalue"]["value"]["id"]
+                    try:
+                        rel_id = rel_val["mainsnak"]["datavalue"]["value"]["id"]
+                    except:
+                        continue
                     rel = get_info(rel_id)
                     if depth < 2:
                         rel[side] = get_rels(rel_id, side, depth + 1)
