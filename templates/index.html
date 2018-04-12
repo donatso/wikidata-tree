@@ -36,8 +36,12 @@
       pointer-events: none;
     }
 
-    .kartica_button{
-      fill: black;
+    .tree_collapse_button{
+      fill: lightgray;
+    }
+
+    .tree_img{
+        pointer-events: none;
     }
 
     svg, body{
@@ -110,12 +114,22 @@
         vertical-align:    middle;
     }
 
+    .result_info{
+        display: none;
+        position: absolute;
+        top: 15%;
+        width: 100%;
+        text-align: center;
+        font-size: 2em;
+    }
+
 
 
 </style>
 
 
 <div class="navbar"><input type="text" placeholder="search" id="search"></div>
+<div class="result_info">No record of relatives :(</div>
 <div id="results"></div>
 <div class="overlay"><div>LOADING DATA...</div></div>
 

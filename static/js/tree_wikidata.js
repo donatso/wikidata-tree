@@ -1,6 +1,6 @@
 class Dtree {
     constructor() {
-        this.collapse = this.collapse.bind(this);
+        this.toggleChildren = this.toggleChildren.bind(this);
         this.click = this.click.bind(this);
         this.zoomed = this.zoomed.bind(this);
 
@@ -86,13 +86,15 @@ class Dtree {
     }
 
 
-    collapse(d) {
-        var self = this;
-        if (d.children) {
+    toggleChildren(d) {
+         if (d.children) {
             d._children = d.children;
-            d._children.forEach(self.collapse);
-            d.children = null
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
         }
+        this.drawTree(this.treeData, true);
     }
 
     click(d) {
@@ -158,10 +160,11 @@ class Dtree {
 
 
 
-    drawTree(data) {
-
-        this.treeData = data;
-        this.root = this.createRoot();
+    drawTree(data, root) {
+        if (!root) {
+            this.treeData = data;
+            this.root = this.createRoot();
+        }
         this.treeHeight = this.calculateTreeHeight();
         this.root.x0 = this.treeHeight/2;
         this.root.y0 = 0;
@@ -173,7 +176,7 @@ class Dtree {
             .call(this.zoom)
             .call(this.zoom.transform, this.transform(this.width/2, this.height/2 - this.treeHeight/2));
 
-        // this.root.children.forEach(this.collapse);
+        // this.root.children.forEach(this.toggleChildren);
                 // Assigns the x and y position for the nodes
         console.log(this.calculateTreeHeight())
 
@@ -185,16 +188,17 @@ class Dtree {
         this.drawTree(data);
     }
 
-    mappingTree(){
+    mappingTree(ns) {
         let treemap = this.treemap(this.left_hierarchy);
 
-        if (this.left_hierarchy.children && this.right_hierarchy.children){
+        if (this.left_hierarchy.children && this.right_hierarchy.children) {
             treemap.children = treemap.children.concat(this.treemap(this.right_hierarchy).children);
-        } else if (!this.left_hierarchy.children && this.right_hierarchy.children){
+        } else if (!this.left_hierarchy.children && this.right_hierarchy.children) {
             treemap.children = this.treemap(this.right_hierarchy).children
         }
-        for (let i=0; i<treemap.descendants().length; i++){
-            if (treemap.descendants()[i].depth === 1){
+
+        for (let i = 0; i < treemap.descendants().length; i++) {
+            if (treemap.descendants()[i].depth === 1) {
                 treemap.descendants()[i].parent = treemap.descendants()[0]
             }
         }
@@ -210,6 +214,10 @@ class Dtree {
         console.log("update start")
         // this.svg.call(this.zoom.transform, this.transform(this.width/2,this.height/2));
         // Compute the new tree layout.
+        // if (source.data.wiki_id !== this.root.data.wiki_id){
+        //     this.treeDataMapped = this.mappingTree("update");
+        // }
+
         let nodes = this.treeDataMapped.descendants(),
             links = nodes.slice(1),
             rectW = 150,
@@ -234,8 +242,7 @@ class Dtree {
             .attr('class', 'tree_node')
             .attr("transform", function (d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
-            })
-            .on('click', this.click);
+            });
 
 
         nodeEnter
@@ -247,6 +254,7 @@ class Dtree {
             .attr("rx", 5)
             .attr("ry", 5)
             .classed("tree_card", true)
+            .on('click', this.click);
 
         // Add labels for the nodes
          nodeEnter.append("text")
@@ -284,20 +292,21 @@ class Dtree {
             .attr("width", 30)
             .attr("height", 30)
             .attr("preserveAspectRatio", "xMidYMid slice")
-            .attr("class", "rukavica")
+            .attr("class", "tree_img")
             .style("border-radius", "5em");
 
 
-    // var move_x_to = -rectW/2 +22;
+    
     // function move_x(d) {
-    //
+    //     let move_x_to = -rectW/2 +22;
     //     if(d.depth > 0 ){
     //         return rectW/2 +20
     //     }else if (d.depth < 0) { return move_x_to}
     //     else {return move_x_to}
     // }
-    // var addLeftChild = nodeEnter.append("g");
-    // addLeftChild.append("rect")
+    // let toggleButton = nodeEnter.append("g")
+    //                         .on('click', this.toggleChildren);;
+    // toggleButton.append("rect")
     //   .attr("x", function (d) {
     //       return -30 + move_x(d)
     //   })
@@ -306,9 +315,9 @@ class Dtree {
     //   .attr("width", 20)
     //   .attr("rx", 10)
     //   .attr("ry", 10)
-    //     .attr("class", "kartica_button rukavica");
+    //     .attr("class", "tree_collapse_button");
     //
-    // addLeftChild.append("line")
+    // toggleButton.append("line")
     //   .attr("x1", function (d) {
     //       return -25 + move_x(d)
     //   })
@@ -320,7 +329,7 @@ class Dtree {
     //   .attr("stroke", "white")
     //   .style("stroke-width", "2");
     //
-    // addLeftChild.append("line")
+    // toggleButton.append("line")
     //   .attr("x1", function (d) {
     //       return -20 + move_x(d)
     //   })
@@ -331,11 +340,22 @@ class Dtree {
     //   .attr("y2", 6)
     //   .attr("stroke", "white")
     //   .style("stroke-width", "2")
-    //     .attr("class", "dtree_children_line_up");
+    //     .attr("class", "tree_collapse_button_line_up");
     //
-    // addLeftChild.style("display", function (d) {
+    // toggleButton.style("display", function (d) {
     //     if(d.data.wiki_id !== self.root.data.wiki_id && d.children){return "block"}
     //     else {return "none"}
+    // });
+    //
+    //     toggleButton.on("click", function(d) {
+    //     console.log(this)
+    //     var button = $( this )
+    //     var button_line_up = button.find(".dtree_children_line_up");
+    //     console.log(button_line_up)
+    //     if (d._children){
+    //         button_line_up.attr("class" ,"dtree_children_line_up")
+    //     } else { button_line_up.attr("class" ,"dtree_children_line_up toggled") }
+    //     self.toggleChildren(d);
     // });
 
         // UPDATE
@@ -416,15 +436,6 @@ class Dtree {
 
             return path
         }
-
-        function verticalCentar(d) {
-            return -d.x0 + self.height / 2;
-        }
-
-        setTimeout(function () {
-            // self.centerNode(nodes, false)
-            // self.svg.call(self.zoom).call(self.zoom.transform, this.transform(self.width/2, self.height/2));
-        }, 1000)
 
     }
 
@@ -509,13 +520,16 @@ function get_tree(p_id) {
     let loader = setTimeout(function () {
         $(".overlay").fadeIn(300);
     }, 500);
-
+    $(".result_info").hide()
     $.get("/", {person: p_id})
         .done(function (data) {
             clearTimeout(loader);
             $(".overlay").fadeOut(300);
             console.log(data)
             dtreee.changeData(data["tree"])
+            if (data["tree"]["ancestry"].length + data["tree"]["progeny"].length === 0){
+                $(".result_info").show().fadeOut(3000);
+            }
         })
 }
 
@@ -548,4 +562,4 @@ var autocomplete_options = {
         });
 
 // get Douglas Adams
-get_tree("Q42");
+get_tree("Q76");
