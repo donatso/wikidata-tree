@@ -6,8 +6,8 @@ class Dtree {
 
         this.treeData = {};
         this.margin = {top: 20, right: 90, bottom: 30, left: 90};
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+        this.width = window.innerWidth -10;
+        this.height = window.innerHeight -10;
         this.svg = d3.select("body").append("svg")
             .attr("width", this.width )
             .attr("height", this.height );
