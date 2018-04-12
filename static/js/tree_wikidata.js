@@ -486,24 +486,24 @@ let initialData = {
             ]
         };
 
-dtreee.drawTree(initialData);
+$("#search").on('keyup', function (e) {
+        // if (e.keyCode === 13) {
+        //     console.log("start")
+        //     $.get("/", {search: $("#search").val()})
+        //         .done(function (data) {
+        //             console.log(data)
+        //             console.log("end")
+        //             $("#results").html("")
+        //             $.each(data["search"], function (i, d) {
+        //                 $("#results").append(
+        //                     '<div onclick="get_tree(\'' + d['wiki_id'] + '\')">' + d['label'] + '</div>'
+        //                 )
+        //             })
+        //         })
+        // }
+});
 
-// $("#search").on('keyup', function (e) {
-//         if (e.keyCode === 13) {
-//             console.log("start")
-//             $.get("/", {search: $("#search").val()})
-//                 .done(function (data) {
-//                     console.log(data)
-//                     console.log("end")
-//                     $("#results").html("")
-//                     $.each(data["search"], function (i, d) {
-//                         $("#results").append(
-//                             '<div onclick="get_tree(\'' + d['wiki_id'] + '\')">' + d['label'] + '</div>'
-//                         )
-//                     })
-//                 })
-//         }
-// });
+
 $(".overlay").fadeOut(300);
 function get_tree(p_id) {
     let loader = setTimeout(function () {
@@ -547,3 +547,5 @@ var autocomplete_options = {
 
         });
 
+// get Douglas Adams
+get_tree("Q41");
