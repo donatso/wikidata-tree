@@ -94,7 +94,7 @@ class Dtree {
             d.children = d._children;
             d._children = null;
         }
-        this.drawTree(this.treeData, true);
+        this.update(d, true);
     }
 
     click(d) {
@@ -176,7 +176,7 @@ class Dtree {
             .call(this.zoom)
             .call(this.zoom.transform, this.transform(this.width/2, this.height/2 - this.treeHeight/2));
 
-        // this.root.children.forEach(this.toggleChildren);
+
                 // Assigns the x and y position for the nodes
         console.log(this.calculateTreeHeight())
 
@@ -227,14 +227,13 @@ class Dtree {
         nodes.forEach(function (d) {
             d.y = d.depth * 180;
         });
-        nodes.reverse();
 
         // ****************** Nodes section ***************************
 
         // Update the nodes...
         let node = this.svgGroup.selectAll('g.tree_node')
             .data(nodes, function (d, i) {
-                return d.wiki_id || (d.id = ++i);
+                return d.data.wiki_id || (d.id = ++i);
             });
 
         // Enter any new modes at the parent's previous position.
@@ -297,66 +296,66 @@ class Dtree {
 
 
     
-    // function move_x(d) {
-    //     let move_x_to = -rectW/2 +22;
-    //     if(d.depth > 0 ){
-    //         return rectW/2 +20
-    //     }else if (d.depth < 0) { return move_x_to}
-    //     else {return move_x_to}
-    // }
-    // let toggleButton = nodeEnter.append("g")
-    //                         .on('click', this.toggleChildren);;
-    // toggleButton.append("rect")
-    //   .attr("x", function (d) {
-    //       return -30 + move_x(d)
-    //   })
-    //   .attr("y", -10)
-    //   .attr("height", 20)
-    //   .attr("width", 20)
-    //   .attr("rx", 10)
-    //   .attr("ry", 10)
-    //     .attr("class", "tree_collapse_button");
-    //
-    // toggleButton.append("line")
-    //   .attr("x1", function (d) {
-    //       return -25 + move_x(d)
-    //   })
-    //   .attr("y1", 1)
-    //   .attr("x2", function (d) {
-    //       return -15 + move_x(d)
-    //   })
-    //   .attr("y2", 1)
-    //   .attr("stroke", "white")
-    //   .style("stroke-width", "2");
-    //
-    // toggleButton.append("line")
-    //   .attr("x1", function (d) {
-    //       return -20 + move_x(d)
-    //   })
-    //   .attr("y1", -4)
-    //   .attr("x2", function (d) {
-    //       return -20 + move_x(d)
-    //   })
-    //   .attr("y2", 6)
-    //   .attr("stroke", "white")
-    //   .style("stroke-width", "2")
-    //     .attr("class", "tree_collapse_button_line_up");
-    //
-    // toggleButton.style("display", function (d) {
-    //     if(d.data.wiki_id !== self.root.data.wiki_id && d.children){return "block"}
-    //     else {return "none"}
-    // });
-    //
-    //     toggleButton.on("click", function(d) {
-    //     console.log(this)
-    //     var button = $( this )
-    //     var button_line_up = button.find(".dtree_children_line_up");
-    //     console.log(button_line_up)
-    //     if (d._children){
-    //         button_line_up.attr("class" ,"dtree_children_line_up")
-    //     } else { button_line_up.attr("class" ,"dtree_children_line_up toggled") }
-    //     self.toggleChildren(d);
-    // });
+    function move_x(d) {
+        let move_x_to = -rectW/2 +22;
+        if(d.depth > 0 ){
+            return rectW/2 +20
+        }else if (d.depth < 0) { return move_x_to}
+        else {return move_x_to}
+    }
+    let toggleButton = nodeEnter.append("g")
+                            // .on('click', this.toggleChildren);;
+    toggleButton.append("rect")
+      .attr("x", function (d) {
+          return -30 + move_x(d)
+      })
+      .attr("y", -10)
+      .attr("height", 20)
+      .attr("width", 20)
+      .attr("rx", 10)
+      .attr("ry", 10)
+        .attr("class", "tree_collapse_button");
+
+    toggleButton.append("line")
+      .attr("x1", function (d) {
+          return -25 + move_x(d)
+      })
+      .attr("y1", 1)
+      .attr("x2", function (d) {
+          return -15 + move_x(d)
+      })
+      .attr("y2", 1)
+      .attr("stroke", "white")
+      .style("stroke-width", "2");
+
+    toggleButton.append("line")
+      .attr("x1", function (d) {
+          return -20 + move_x(d)
+      })
+      .attr("y1", -4)
+      .attr("x2", function (d) {
+          return -20 + move_x(d)
+      })
+      .attr("y2", 6)
+      .attr("stroke", "white")
+      .style("stroke-width", "2")
+        .attr("class", "tree_collapse_button_line_up");
+
+    toggleButton.style("display", function (d) {
+        if(d.data.wiki_id !== self.root.data.wiki_id && d.children){return "block"}
+        else {return "none"}
+    });
+
+    toggleButton.on("click", function(d) {
+        console.log(this)
+        var button = $( this )
+        var button_line_up = button.find(".dtree_children_line_up");
+        console.log(button_line_up)
+        if (d._children){
+            button_line_up.attr("class" ,"dtree_children_line_up")
+        } else { button_line_up.attr("class" ,"dtree_children_line_up toggled") }
+        self.toggleChildren(d);
+    });
 
         // UPDATE
         let nodeUpdate = nodeEnter.merge(node);
@@ -390,7 +389,7 @@ class Dtree {
         // Update the links...
         let link = this.svgGroup.selectAll('path.tree_link')
             .data(links, function (d) {
-                return d.id;
+                return d.data.wiki_id;
             });
 
         // Enter any new links at the parent's previous position.
