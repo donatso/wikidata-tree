@@ -1,5 +1,5 @@
-# wikidata-tree
-wikidata family trees with d3
+# wikidata family trees with d3
+
 http://wikidata-tree.herokuapp.com/
 (Server is bit slow because is free :) )
 
